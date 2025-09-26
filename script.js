@@ -75,6 +75,7 @@ async function sendEmbed(channelId, embed) {
     try {
         const response = await fetch(`${WORKER_URL}/postEmbed?channel_id=${channelId}&embed_json=${encodeURIComponent(JSON.stringify(embed))}`);
         if (!response.ok) throw new Error(`Embed failed: ${response.status} ${await response.text()}`);
+        console.log('Embed sent successfully to channel:', channelId);
     } catch (e) {
         console.error('Embed error:', e);
     }
@@ -84,6 +85,7 @@ async function sendDM(userId, message) {
     try {
         const response = await fetch(`${WORKER_URL}/sendDM?user_id=${userId}&message=${encodeURIComponent(message)}`);
         if (!response.ok) throw new Error(`DM failed: ${response.status} ${await response.text()}`);
+        console.log('DM sent successfully to user:', userId);
     } catch (e) {
         console.error('DM error:', e);
     }
@@ -144,6 +146,7 @@ function renderNotifications() {
 
 document.getElementById('discordLoginBtn').addEventListener('click', () => {
     const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify&prompt=none`;
+    console.log('Initiating OAuth redirect:', oauthUrl);
     window.location.href = oauthUrl;
 });
 
@@ -151,14 +154,18 @@ async function handleOAuthRedirect() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const error = urlParams.get('error');
+    console.log('OAuth callback received:', { code, error, url: window.location.href });
+
     if (error) {
-        console.error('OAuth error:', urlParams.get('error_description'));
+        console.error('OAuth error:', urlParams.get('error_description') || 'Unknown error');
         showModal('alert', `OAuth error: ${urlParams.get('error_description') || 'Unknown error'}`);
         window.history.replaceState({}, document.title, REDIRECT_URI);
         showScreen('discord');
         return;
     }
+
     if (!code) {
+        console.log('No OAuth code provided, showing discord screen');
         showScreen('discord');
         return;
     }
@@ -166,6 +173,7 @@ async function handleOAuthRedirect() {
     // Prevent reprocessing if already logged in
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser && JSON.parse(savedUser).id) {
+        console.log('Found existing user session, redirecting to mainMenu');
         currentUser = JSON.parse(savedUser);
         showScreen('mainMenu');
         updateSidebarProfile();
@@ -178,7 +186,9 @@ async function handleOAuthRedirect() {
 
     let user;
     try {
-        const response = await fetch(`${WORKER_URL}/auth?code=${code}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`, {
+        const authUrl = `${WORKER_URL}/auth?code=${code}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+        console.log('Fetching user data from Worker:', authUrl);
+        const response = await fetch(authUrl, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             mode: 'cors'
@@ -188,9 +198,10 @@ async function handleOAuthRedirect() {
             throw new Error(`Auth failed: ${response.status} ${errorText}`);
         }
         user = await response.json();
+        console.log('User data received:', user);
         window.history.replaceState({}, document.title, REDIRECT_URI);
     } catch (e) {
-        console.error('Auth fetch error:', e);
+        console.error('Auth fetch error:', e.message);
         showModal('alert', `Failed to authenticate: ${e.message}. Please check console for details.`);
         showScreen('discord');
         return;
@@ -201,6 +212,7 @@ async function handleOAuthRedirect() {
 
     let member;
     try {
+        console.log('Fetching member data:', `${WORKER_URL}/member/${user.id}`);
         const response = await fetch(`${WORKER_URL}/member/${user.id}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -211,8 +223,9 @@ async function handleOAuthRedirect() {
             throw new Error(`Member fetch failed: ${response.status} ${errorText}`);
         }
         member = await response.json();
+        console.log('Member data received:', member);
     } catch (e) {
-        console.error('Member fetch error:', e);
+        console.error('Member fetch error:', e.message);
         showModal('alert', `Failed to fetch member: ${e.message}. Please check console for details.`);
         showScreen('discord');
         return;
@@ -233,6 +246,7 @@ async function handleOAuthRedirect() {
     await new Promise(r => setTimeout(r, 1000));
 
     if (!member.roles.includes(REQUIRED_ROLE)) {
+        console.log('User lacks required role:', REQUIRED_ROLE);
         showModal('alert', 'You do not have manager permissions');
         showScreen('discord');
         return;
@@ -240,8 +254,10 @@ async function handleOAuthRedirect() {
 
     const profile = getEmployee(currentUser.id).profile;
     if (!profile.name) {
+        console.log('No profile name, redirecting to setupWelcome');
         showScreen('setupWelcome');
     } else {
+        console.log('Profile found, redirecting to confirm screen');
         document.getElementById('confirmName').textContent = profile.name;
         document.getElementById('confirmRole').textContent = 'Verified Role: Manager';
         showScreen('confirm');
@@ -280,9 +296,11 @@ document.getElementById('setupDepartmentContinueBtn').addEventListener('click', 
             if (currentUser.roles.includes(deptRole)) {
                 updateEmployee(currentUser);
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                console.log('Role verification successful, redirecting to setupComplete');
                 showScreen('setupComplete');
                 playSuccessSound();
             } else {
+                console.log('Role verification failed for department:', currentUser.profile.department);
                 showModal('alert', 'Role verification failed');
                 showScreen('setupDepartment');
             }
@@ -293,6 +311,7 @@ document.getElementById('setupDepartmentContinueBtn').addEventListener('click', 
 });
 
 document.getElementById('setupCompleteBtn').addEventListener('click', () => {
+    console.log('Setup complete, redirecting to portalWelcome');
     showScreen('portalWelcome');
     document.getElementById('portalWelcomeName').textContent = currentUser.profile.name;
     setTimeout(() => {
@@ -303,6 +322,7 @@ document.getElementById('setupCompleteBtn').addEventListener('click', () => {
 });
 
 document.getElementById('continueBtn').addEventListener('click', () => {
+    console.log('Continue button clicked, redirecting to portalWelcome');
     showScreen('portalWelcome');
     document.getElementById('portalWelcomeName').textContent = currentUser.profile.name;
     setTimeout(() => {
@@ -352,6 +372,7 @@ function renderAbsences(tab) {
 }
 
 window.approveAbsence = async (userId, absenceId) => {
+    console.log('Approving absence:', { userId, absenceId });
     const emp = getEmployee(userId);
     const absence = emp.absences.find(a => a.id === absenceId);
     if (absence) {
@@ -372,6 +393,7 @@ window.approveAbsence = async (userId, absenceId) => {
 };
 
 window.showRejectAbsence = (userId, absenceId) => {
+    console.log('Showing reject absence modal:', { userId, absenceId });
     showModal('alert', `
         <h2>Reject Absence</h2>
         <input type="text" id="rejectReason" placeholder="Reason">
@@ -526,6 +548,7 @@ function renderUserSearch(inputId, resultsId) {
 }
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
+    console.log('Logging out, clearing currentUser');
     localStorage.removeItem('currentUser');
     document.getElementById('goodbyeName').textContent = currentUser.profile.name;
     showScreen('goodbye');
@@ -554,14 +577,19 @@ window.addEventListener('load', () => {
     document.getElementById('modeToggle').checked = darkMode;
     document.body.classList.toggle('dark', darkMode);
 
+    console.log('Window loaded, checking OAuth state:', { savedUser: !!savedUser, code: new URLSearchParams(window.location.search).get('code') });
+
     if (new URLSearchParams(window.location.search).get('code')) {
+        console.log('Detected OAuth code, processing redirect');
         handleOAuthRedirect();
     } else if (savedUser) {
+        console.log('Found saved user, loading session');
         currentUser = JSON.parse(savedUser);
         showScreen('mainMenu');
         updateSidebarProfile();
         renderNotifications();
     } else {
+        console.log('No user session, showing discord screen');
         showScreen('discord');
     }
 });
@@ -569,6 +597,7 @@ window.addEventListener('load', () => {
 window.addEventListener('hashchange', () => {
     const screenId = window.location.hash.slice(1);
     if (screens[screenId]) {
+        console.log('Hash changed, showing screen:', screenId);
         showScreen(screenId);
         if (screenId === 'absences') document.getElementById('absencesBtn').click();
         else if (screenId === 'payslips') document.getElementById('payslipsBtn').click();
