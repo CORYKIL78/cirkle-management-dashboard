@@ -1,135 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cirkle Management Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="sidebar" class="sidebar hidden">
-        <button id="sidebarToggle">☰</button>
-        <img id="sidebarProfilePic" src="" alt="Profile">
-        <button id="homeBtn">Home</button>
-        <button id="absencesBtn">Absences</button>
-        <button id="payslipsBtn">Payslips</button>
-        <button id="disciplinariesBtn">Disciplinaries</button>
-        <button id="logoutBtn">Logout</button>
-        <label class="mode-toggle">
-            <input type="checkbox" id="modeToggle"> Dark Mode
-        </label>
-    </div>
-    <div id="notificationPanel" class="notification-panel hidden">
-        <h3>Notifications</h3>
-        <ul id="notificationList"></ul>
-    </div>
-    <div id="discordScreen" class="screen active">
-        <h1>Management Dashboard</h1>
-        <p>Login with Discord to access the dashboard.</p>
-        <button id="discordLoginBtn">Login with Discord</button>
-    </div>
-    <div id="searchingScreen" class="screen">
-        <h1>Searching...</h1>
-        <p>Verifying your account.</p>
-    </div>
-    <div id="rolesScreen" class="screen">
-        <h1>Checking Roles...</h1>
-        <p>Verifying your permissions.</p>
-    </div>
-    <div id="cherryScreen" class="screen">
-        <h1>Almost there...</h1>
-        <p>Finalizing setup.</p>
-    </div>
-    <div id="confirmScreen" class="screen">
-        <h1>Welcome, <span id="confirmName"></span></h1>
-        <p id="confirmRole"></p>
-        <button id="continueBtn">Continue</button>
-    </div>
-    <div id="setupWelcomeScreen" class="screen">
-        <h1>Welcome to Setup</h1>
-        <p>Please complete your profile setup.</p>
-        <button id="setupStartBtn">Start</button>
-    </div>
-    <div id="setupEmailScreen" class="screen">
-        <h1>Enter Your Email</h1>
-        <input type="email" id="setupEmailInput" placeholder="Email">
-        <button id="setupEmailContinueBtn">Continue</button>
-    </div>
-    <div id="setupNameScreen" class="screen">
-        <h1>Enter Your Name</h1>
-        <input type="text" id="setupNameInput" placeholder="Name">
-        <button id="setupNameContinueBtn">Continue</button>
-    </div>
-    <div id="setupDepartmentScreen" class="screen">
-        <h1>Select Your Department</h1>
-        <label><input type="radio" name="department" value="Development Department"> Development</label>
-        <label><input type="radio" name="department" value="Customer Relations Department"> Customer Relations</label>
-        <label><input type="radio" name="department" value="Careers Department"> Careers</label>
-        <button id="setupDepartmentContinueBtn">Continue</button>
-    </div>
-    <div id="setupVerifyScreen" class="screen">
-        <h1>Verifying...</h1>
-        <p>Checking department role.</p>
-    </div>
-    <div id="setupCompleteScreen" class="screen">
-        <h1>Setup Complete</h1>
-        <p>Your profile is ready!</p>
-        <button id="setupCompleteBtn">Enter Dashboard</button>
-    </div>
-    <div id="portalWelcomeScreen" class="screen">
-        <h1>Welcome, <span id="portalWelcomeName"></span></h1>
-        <p>Accessing the management dashboard...</p>
-    </div>
-    <div id="mainMenuScreen" class="screen">
-        <h1>Management Dashboard</h1>
-        <p>Welcome, <span id="welcomeName"></span></p>
-    </div>
-    <div id="absencesScreen" class="screen">
-        <h1>Manage Absences</h1>
-        <div id="absencesTabs">
-            <button class="tab-btn active" data-tab="pending">Pending</button>
-            <button class="tab-btn" data-tab="approved">Approved</button>
-            <button class="tab-btn" data-tab="rejected">Rejected</button>
-        </div>
-        <div id="absencesContent"></div>
-    </div>
-    <div id="payslipsScreen" class="screen">
-        <h1>Issue Payslips</h1>
-        <button id="issuePayslipBtn">Issue a Payslip</button>
-        <div id="payslipForm" class="hidden">
-            <input type="text" id="payslipUser" placeholder="Search user...">
-            <div id="userSearchResults"></div>
-            <input type="file" id="payslipFile" accept="image/*,application/pdf">
-            <button id="submitPayslipBtn">Send</button>
-        </div>
-    </div>
-    <div id="disciplinariesScreen" class="screen">
-        <h1>Issue Disciplinaries</h1>
-        <button id="issueDisciplinaryBtn">Issue Disciplinary</button>
-        <div id="disciplinaryForm" class="hidden">
-            <input type="text" id="disciplinaryUser" placeholder="Search user...">
-            <div id="userSearchResultsDisciplinary"></div>
-            <select id="strikeLevel">
-                <option value="Strike 1">Strike 1</option>
-                <option value="Strike 2">Strike 2</option>
-                <option value="Strike 3">Strike 3</option>
-            </select>
-            <input type="text" id="disciplinaryReason" placeholder="Reason">
-            <textarea id="disciplinaryDetails" placeholder="Details"></textarea>
-            <input type="text" id="disciplinaryAction" placeholder="Action (optional)">
-            <button id="submitDisciplinaryBtn">Send</button>
-        </div>
-    </div>
-    <div id="goodbyeScreen" class="screen">
-        <h1>Goodbye, <span id="goodbyeName"></span></h1>
-        <p>You have been logged out.</p>
-    </div>
-    <div id="alertModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p id="alertMessage"></p>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Cirkle Management Dashboard</title>
+       <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+       <div id="sidebar" class="sidebar hidden">
+           <button id="sidebarToggle">☰</button>
+           <img id="sidebarProfilePic" src="" alt="Profile">
+           <button id="homeBtn">Home</button>
+           <button id="absencesBtn">Absences</button>
+           <button id="payslipsBtn">Payslips</button>
+           <button id="disciplinariesBtn">Disciplinaries</button>
+           <button id="logoutBtn">Logout</button>
+           <label class="mode-toggle">
+               <input type="checkbox" id="modeToggle"> Dark Mode
+           </label>
+       </div>
+       <div id="notificationPanel" class="notification-panel hidden">
+           <h3>Notifications</h3>
+           <ul id="notificationList"></ul>
+       </div>
+       <div id="discordScreen" class="screen active">
+           <h1>Management Dashboard</h1>
+           <p>Login with Discord to access the dashboard.</p>
+           <button id="discordLoginBtn">Login with Discord</button>
+       </div>
+       <div id="searchingScreen" class="screen">
+           <h1>Searching...</h1>
+           <p>Verifying your account.</p>
+       </div>
+       <div id="rolesScreen" class="screen">
+           <h1>Checking Roles...</h1>
+           <p>Verifying your permissions.</p>
+       </div>
+       <div id="cherryScreen" class="screen">
+           <h1>Almost there...</h1>
+           <p>Finalizing setup.</p>
+       </div>
+       <div id="confirmScreen" class="screen">
+           <h1>Welcome, <span id="confirmName"></span></h1>
+           <p id="confirmRole"></p>
+           <button id="continueBtn">Continue</button>
+       </div>
+       <div id="setupWelcomeScreen" class="screen">
+           <h1>Welcome to Setup</h1>
+           <p>Please complete your profile setup.</p>
+           <button id="setupStartBtn">Start</button>
+       </div>
+       <div id="setupEmailScreen" class="screen">
+           <h1>Enter Your Email</h1>
+           <input type="email" id="setupEmailInput" placeholder="Email">
+           <button id="setupEmailContinueBtn">Continue</button>
+       </div>
+       <div id="setupNameScreen" class="screen">
+           <h1>Enter Your Name</h1>
+           <input type="text" id="setupNameInput" placeholder="Name">
+           <button id="setupNameContinueBtn">Continue</button>
+       </div>
+       <div id="setupDepartmentScreen" class="screen">
+           <h1>Select Your Department</h1>
+           <label><input type="radio" name="department" value="Development Department"> Development</label>
+           <label><input type="radio" name="department" value="Customer Relations Department"> Customer Relations</label>
+           <label><input type="radio" name="department" value="Careers Department"> Careers</label>
+           <button id="setupDepartmentContinueBtn">Continue</button>
+       </div>
+       <div id="setupVerifyScreen" class="screen">
+           <h1>Verifying...</h1>
+           <p>Checking department role.</p>
+       </div>
+       <div id="setupCompleteScreen" class="screen">
+           <h1>Setup Complete</h1>
+           <p>Your profile is ready!</p>
+           <button id="setupCompleteBtn">Enter Dashboard</button>
+       </div>
+       <div id="portalWelcomeScreen" class="screen">
+           <h1>Welcome, <span id="portalWelcomeName"></span></h1>
+           <p>Accessing the management dashboard...</p>
+       </div>
+       <div id="mainMenuScreen" class="screen">
+           <h1>Management Dashboard</h1>
+           <p>Welcome, <span id="welcomeName"></span></p>
+       </div>
+       <div id="absencesScreen" class="screen">
+           <h1>Manage Absences</h1>
+           <div id="absencesTabs">
+               <button class="tab-btn active" data-tab="pending">Pending</button>
+               <button class="tab-btn" data-tab="approved">Approved</button>
+               <button class="tab-btn" data-tab="rejected">Rejected</button>
+           </div>
+           <div id="absencesContent"></div>
+       </div>
+       <div id="payslipsScreen" class="screen">
+           <h1>Issue Payslips</h1>
+           <button id="issuePayslipBtn">Issue a Payslip</button>
+           <div id="payslipForm" class="hidden">
+               <input type="text" id="payslipUser" placeholder="Search user...">
+               <div id="userSearchResults"></div>
+               <input type="file" id="payslipFile" accept="image/*,application/pdf">
+               <button id="submitPayslipBtn">Send</button>
+           </div>
+       </div>
+       <div id="disciplinariesScreen" class="screen">
+           <h1>Issue Disciplinaries</h1>
+           <button id="issueDisciplinaryBtn">Issue Disciplinary</button>
+           <div id="disciplinaryForm" class="hidden">
+               <input type="text" id="disciplinaryUser" placeholder="Search user...">
+               <div id="userSearchResultsDisciplinary"></div>
+               <select id="strikeLevel">
+                   <option value="Strike 1">Strike 1</option>
+                   <option value="Strike 2">Strike 2</option>
+                   <option value="Strike 3">Strike 3</option>
+               </select>
+               <input type="text" id="disciplinaryReason" placeholder="Reason">
+               <textarea id="disciplinaryDetails" placeholder="Details"></textarea>
+               <input type="text" id="disciplinaryAction" placeholder="Action (optional)">
+               <button id="submitDisciplinaryBtn">Send</button>
+           </div>
+       </div>
+       <div id="goodbyeScreen" class="screen">
+           <h1>Goodbye, <span id="goodbyeName"></span></h1>
+           <p>You have been logged out.</p>
+       </div>
+       <div id="alertModal" class="modal">
+           <div class="modal-content">
+               <span class="close">&times;</span>
+               <p id="alertMessage"></p>
+           </div>
+       </div>
+       <script src="script.js"></script>
+   </body>
+   </html>

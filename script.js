@@ -5,13 +5,12 @@ const DEPT_ROLES = {
     'Careers Department': '1315065603178102794'
 };
 const GUILD_ID = '1310656642672627752';
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1417260030851551273/KGKnWF3mwTt7mNWmC3OTAPWcWJSl1FnQ3-Ub-l1-xpk46tOsAYAtIhRTlti2qxjJSOds';
 const WORKER_URL = 'https://timeclock-proxy.marcusray.workers.dev';
 const CLIENT_ID = '1417915896634277888';
 const REDIRECT_URI = 'https://corykil78.github.io/cirkle-management-dashboard';
 const SUCCESS_SOUND_URL = 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_9d4a8d3f8d.mp3';
 const ABSENCE_CHANNEL = '1417583684525232291';
-const NOTIFICATION_CHANNEL = '1417583684525232291'; // Same as timeclock for simplicity
+const NOTIFICATION_CHANNEL = '1417583684525232291';
 
 const screens = {
     discord: document.getElementById('discordScreen'),
@@ -72,23 +71,19 @@ function playSuccessSound() {
     audio.play().catch(e => console.error('Sound error:', e));
 }
 
-async function sendWebhook(content) {
-    try {
-        await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content })
-        });
-    } catch (e) {
-        console.error('Webhook error:', e);
-    }
-}
-
 async function sendEmbed(channelId, embed) {
     try {
         await fetch(`${WORKER_URL}/postEmbed?channel_id=${channelId}&embed_json=${encodeURIComponent(JSON.stringify(embed))}`);
     } catch (e) {
         console.error('Embed error:', e);
+    }
+}
+
+async function sendDM(userId, message) {
+    try {
+        await fetch(`${WORKER_URL}/sendDM?user_id=${userId}&message=${encodeURIComponent(message)}`);
+    } catch (e) {
+        console.error('DM error:', e);
     }
 }
 
@@ -335,7 +330,7 @@ window.approveAbsence = async (userId, absenceId) => {
         absence.status = 'approved';
         emp.onLOA = true;
         updateEmployee(emp);
-        await sendWebhook(`<@${userId}> Your absence has been approved! Check your staff portal.`);
+        await sendDM(userId, `Your absence has been approved! Check your staff portal.`);
         await sendEmbed(NOTIFICATION_CHANNEL, {
             title: 'Absence Approved',
             description: `User: <@${userId}> (${emp.profile.name})\nType: ${absence.type}\nStart: ${absence.startDate}\nEnd: ${absence.endDate}`,
@@ -366,13 +361,13 @@ window.showRejectAbsence = (userId, absenceId) => {
             absence.status = 'rejected';
             absence.reason = reason;
             updateEmployee(emp);
-            await sendWebhook(`<@${userId}> Your absence has been rejected. Reason: ${reason}. Check your staff portal.`);
+            await sendDM(userId, `Your absence has been rejected. Reason: ${reason}. Check your staff portal.`);
             await sendEmbed(NOTIFICATION_CHANNEL, {
                 title: 'Absence Rejected',
                 description: `User: <@${userId}> (${emp.profile.name})\nType: ${absence.type}\nReason: ${reason}`,
                 color: 0xff0000
             });
-            addNotification(userId, 'absence', 'Your absence has been rejected', 'absences');
+            addNotification(userId, 'absence', `Your absence has been rejected: ${reason}`, 'absences');
             closeModal('alert');
             showModal('alert', 'Absence rejected');
             playSuccessSound();
@@ -418,7 +413,7 @@ document.getElementById('submitPayslipBtn').addEventListener('click', () => {
         emp.payslips = emp.payslips || [];
         emp.payslips.push({ timestamp: new Date().toLocaleString(), fileBase64: reader.result });
         updateEmployee(emp);
-        await sendWebhook(`<@${emp.id}> Your payslip has been issued. Check your staff portal.`);
+        await sendDM(emp.id, `Your payslip has been issued. Check your staff portal.`);
         await sendEmbed(NOTIFICATION_CHANNEL, {
             title: 'Payslip Issued',
             description: `User: <@${emp.id}> (${emp.profile.name})\nTimestamp: ${new Date().toLocaleString()}`,
@@ -470,7 +465,7 @@ document.getElementById('submitDisciplinaryBtn').addEventListener('click', async
     emp.strikes = emp.strikes || [];
     emp.strikes.push({ level, reason, details, action: action || 'None', timestamp: new Date().toLocaleString() });
     updateEmployee(emp);
-    await sendWebhook(`<@${emp.id}> You have been issued a ${level}: ${reason}. Check your staff portal.`);
+    await sendDM(emp.id, `You have been issued a ${level}: ${reason}. Check your staff portal.`);
     await sendEmbed(NOTIFICATION_CHANNEL, {
         title: 'Disciplinary Issued',
         description: `User: <@${emp.id}> (${emp.profile.name})\nLevel: ${level}\nReason: ${reason}\nDetails: ${details}\nAction: ${action || 'None'}`,

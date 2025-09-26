@@ -1,123 +1,123 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    transition: background 0.3s, color 0.3s;
-}
-.screen {
-    display: none;
-    text-align: center;
-    padding: 20px;
-}
-.screen.active {
-    display: block;
-}
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 60px;
-    background: #333;
-    transition: width 0.3s;
-}
-.sidebar.extended {
-    width: 200px;
-}
-.sidebar img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 10px auto;
-    display: block;
-}
-.sidebar button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: none;
-    color: white;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-}
-.notification-panel {
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 200px;
-    background: #f0f0f0;
-    padding: 10px;
-}
-.notification-panel li {
-    cursor: pointer;
-    padding: 5px;
-    border-bottom: 1px solid #ddd;
-}
-.notification-panel li.latest {
-    background: #e0f7fa;
-}
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    align-items: center;
-    justify-content: center;
-}
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 500px;
-    width: 90%;
-}
-.close {
-    float: right;
-    cursor: pointer;
-}
-.tab-btn {
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-}
-.tab-btn.active {
-    background: #007bff;
-    color: white;
-}
-.absence-item, .payslip-item, .disciplinary-item {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 10px 0;
-}
-.absence-item.approved { background: #d4edda; }
-.absence-item.rejected { background: #f8d7da; }
-.user-search-item {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    cursor: pointer;
-}
-.user-search-item img {
-    margin-right: 10px;
-}
-.hidden {
-    display: none;
-}
-body.dark {
-    background: #222;
-    color: #fff;
-}
-body.dark .sidebar {
-    background: #111;
-}
-body.dark .notification-panel {
-    background: #333;
-}
-body.dark .modal-content {
-    background: #333;
-    color: #fff;
-}
+       margin: 0;
+       font-family: Arial, sans-serif;
+       transition: background 0.3s, color 0.3s;
+   }
+   .screen {
+       display: none;
+       text-align: center;
+       padding: 20px;
+   }
+   .screen.active {
+       display: block;
+   }
+   .sidebar {
+       position: fixed;
+       left: 0;
+       top: 0;
+       bottom: 0;
+       width: 60px;
+       background: #333;
+       transition: width 0.3s;
+   }
+   .sidebar.extended {
+       width: 200px;
+   }
+   .sidebar img {
+       width: 40px;
+       height: 40px;
+       border-radius: 50%;
+       margin: 10px auto;
+       display: block;
+   }
+   .sidebar button {
+       display: block;
+       width: 100%;
+       padding: 10px;
+       background: none;
+       color: white;
+       border: none;
+       text-align: left;
+       cursor: pointer;
+   }
+   .notification-panel {
+       position: fixed;
+       right: 0;
+       top: 0;
+       bottom: 0;
+       width: 200px;
+       background: #f0f0f0;
+       padding: 10px;
+   }
+   .notification-panel li {
+       cursor: pointer;
+       padding: 5px;
+       border-bottom: 1px solid #ddd;
+   }
+   .notification-panel li.latest {
+       background: #e0f7fa;
+   }
+   .modal {
+       display: none;
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       background: rgba(0,0,0,0.5);
+       align-items: center;
+       justify-content: center;
+   }
+   .modal-content {
+       background: white;
+       padding: 20px;
+       border-radius: 5px;
+       max-width: 500px;
+       width: 90%;
+   }
+   .close {
+       float: right;
+       cursor: pointer;
+   }
+   .tab-btn {
+       padding: 10px;
+       margin: 5px;
+       cursor: pointer;
+   }
+   .tab-btn.active {
+       background: #007bff;
+       color: white;
+   }
+   .absence-item, .payslip-item, .disciplinary-item {
+       border: 1px solid #ddd;
+       padding: 10px;
+       margin: 10px 0;
+   }
+   .absence-item.approved { background: #d4edda; }
+   .absence-item.rejected { background: #f8d7da; }
+   .user-search-item {
+       display: flex;
+       align-items: center;
+       padding: 5px;
+       cursor: pointer;
+   }
+   .user-search-item img {
+       margin-right: 10px;
+   }
+   .hidden {
+       display: none;
+   }
+   body.dark {
+       background: #222;
+       color: #fff;
+   }
+   body.dark .sidebar {
+       background: #111;
+   }
+   body.dark .notification-panel {
+       background: #333;
+   }
+   body.dark .modal-content {
+       background: #333;
+       color: #fff;
+   }
