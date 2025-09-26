@@ -73,7 +73,8 @@ function playSuccessSound() {
 
 async function sendEmbed(channelId, embed) {
     try {
-        await fetch(`${WORKER_URL}/postEmbed?channel_id=${channelId}&embed_json=${encodeURIComponent(JSON.stringify(embed))}`);
+        const response = await fetch(`${WORKER_URL}/postEmbed?channel_id=${channelId}&embed_json=${encodeURIComponent(JSON.stringify(embed))}`);
+        if (!response.ok) throw new Error(`Embed failed: ${response.status} ${await response.text()}`);
     } catch (e) {
         console.error('Embed error:', e);
     }
@@ -81,7 +82,8 @@ async function sendEmbed(channelId, embed) {
 
 async function sendDM(userId, message) {
     try {
-        await fetch(`${WORKER_URL}/sendDM?user_id=${userId}&message=${encodeURIComponent(message)}`);
+        const response = await fetch(`${WORKER_URL}/sendDM?user_id=${userId}&message=${encodeURIComponent(message)}`);
+        if (!response.ok) throw new Error(`DM failed: ${response.status} ${await response.text()}`);
     } catch (e) {
         console.error('DM error:', e);
     }
@@ -141,15 +143,33 @@ function renderNotifications() {
 }
 
 document.getElementById('discordLoginBtn').addEventListener('click', () => {
-    const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+    const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify&prompt=none`;
     window.location.href = oauthUrl;
 });
 
 async function handleOAuthRedirect() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
+    const error = urlParams.get('error');
+    if (error) {
+        console.error('OAuth error:', urlParams.get('error_description'));
+        showModal('alert', `OAuth error: ${urlParams.get('error_description') || 'Unknown error'}`);
+        window.history.replaceState({}, document.title, REDIRECT_URI);
+        showScreen('discord');
+        return;
+    }
     if (!code) {
         showScreen('discord');
+        return;
+    }
+
+    // Prevent reprocessing if already logged in
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser && JSON.parse(savedUser).id) {
+        currentUser = JSON.parse(savedUser);
+        showScreen('mainMenu');
+        updateSidebarProfile();
+        renderNotifications();
         return;
     }
 
@@ -158,16 +178,20 @@ async function handleOAuthRedirect() {
 
     let user;
     try {
-        const response = await fetch(`${WORKER_URL}/auth?code=${code}`, {
+        const response = await fetch(`${WORKER_URL}/auth?code=${code}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             mode: 'cors'
         });
-        if (!response.ok) throw new Error('Auth failed');
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Auth failed: ${response.status} ${errorText}`);
+        }
         user = await response.json();
-        window.history.replaceState({}, document.title, window.location.pathname);
+        window.history.replaceState({}, document.title, REDIRECT_URI);
     } catch (e) {
-        showModal('alert', `Failed to authenticate: ${e.message}`);
+        console.error('Auth fetch error:', e);
+        showModal('alert', `Failed to authenticate: ${e.message}. Please check console for details.`);
         showScreen('discord');
         return;
     }
@@ -182,10 +206,14 @@ async function handleOAuthRedirect() {
             headers: { 'Content-Type': 'application/json' },
             mode: 'cors'
         });
-        if (!response.ok) throw new Error('Member fetch failed');
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Member fetch failed: ${response.status} ${errorText}`);
+        }
         member = await response.json();
     } catch (e) {
-        showModal('alert', `Failed to fetch member: ${e.message}`);
+        console.error('Member fetch error:', e);
+        showModal('alert', `Failed to fetch member: ${e.message}. Please check console for details.`);
         showScreen('discord');
         return;
     }
